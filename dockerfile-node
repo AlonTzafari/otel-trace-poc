@@ -1,0 +1,13 @@
+ARG SERVICE=
+FROM node:22-alpine
+ARG SERVICE
+WORKDIR /app
+COPY package.json package-lock.json .
+COPY fe/${SERVICE}/package.json ./fe/${SERVICE}/package.json
+RUN npm ci
+COPY fe ./fe
+RUN npm run -w ${SERVICE} build
+ENV SERVICE=$SERVICE
+ENV PORT=80
+EXPOSE 80
+CMD ["npm", "run", "-w", "${SERVICE}", "start"]

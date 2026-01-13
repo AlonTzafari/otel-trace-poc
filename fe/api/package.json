@@ -1,0 +1,22 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsgo",
+    "start": "node --enable-source-maps dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.14.3",
+    "express": "^5.2.1",
+    "proto": "*"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6"
+  }
+}

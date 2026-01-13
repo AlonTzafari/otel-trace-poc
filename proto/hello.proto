@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package hello;
+
+option go_package = "github.com/alontzafari/otel-trace-poc/proto/hello";
+
+// Hello is a test service
+service Hello {
+  // Hello rpc is a test rpc
+  rpc Hello(HelloReq) returns (HelloRes) {}
+}
+
+message HelloReq {
+    string msg = 1;
+}
+
+message HelloRes {
+    string msg = 1;
+}

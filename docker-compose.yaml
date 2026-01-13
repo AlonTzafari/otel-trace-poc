@@ -1,0 +1,9 @@
+services:
+  api:
+    image: api
+    ports:
+      - "8080:80"
+  worker:
+    image: worker
+    expose:
+      - 90

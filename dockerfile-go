@@ -1,0 +1,16 @@
+ARG SERVICE=
+FROM golang:1.24-alpine AS builder
+ARG SERVICE
+WORKDIR /app
+COPY go.mod go.sum .
+RUN go mod download
+COPY proto ./proto
+COPY be ./be
+RUN go build -o ./out/app ./be/${SERVICE}/main.go 
+
+FROM golang:1.24-alpine
+WORKDIR /app
+COPY --from=builder /app/out/app /app/app
+ENV PORT=90
+EXPOSE 90
+CMD ["./app"]
