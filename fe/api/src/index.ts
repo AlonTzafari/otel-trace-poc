@@ -2,8 +2,12 @@ import express from 'express'
 import {hello, test} from 'proto'
 import {ChannelCredentials} from '@grpc/grpc-js'
 
-const hc = new hello.HelloClient("worker:90", ChannelCredentials.createInsecure())
-const tc = new test.TestClient("worker:90", ChannelCredentials.createInsecure())
+const workerHost = process.env.WORKER_HOST || "worker"
+const workerPort = process.env.WORKER_PORT || "90"
+const workerAddr = `${workerHost}:${workerPort}`
+
+const hc = new hello.HelloClient(workerAddr, ChannelCredentials.createInsecure())
+const tc = new test.TestClient(workerAddr, ChannelCredentials.createInsecure())
 
 
 const port = parseInt(process.env.PORT || "8080")  

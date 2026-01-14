@@ -3,7 +3,18 @@ services:
     image: api
     ports:
       - "8080:80"
+    profiles:
+      - "app"
   worker:
     image: worker
     expose:
       - 90
+    profiles:
+      - "app"
+  jager:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - 16686:16686
+      - 4317:4317
+    profiles: 
+      - "infra"
