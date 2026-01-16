@@ -9,5 +9,6 @@ COPY fe ./fe
 RUN npm run -w ${SERVICE} build
 ENV SERVICE=$SERVICE
 ENV PORT=80
+ENV COLLECTOR=jager:4318
 EXPOSE 80
 CMD ["npm", "run", "-w", "${SERVICE}", "start"]

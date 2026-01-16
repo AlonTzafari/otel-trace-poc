@@ -1,6 +1,11 @@
+import { startOtel } from './tracing'
+startOtel()
+
+
 import express from 'express'
 import {hello, test} from 'proto'
 import {ChannelCredentials} from '@grpc/grpc-js'
+
 
 const workerHost = process.env.WORKER_HOST || "worker"
 const workerPort = process.env.WORKER_PORT || "90"
@@ -34,6 +39,14 @@ app.get('/hello', async (req, res) => {
     
 })
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`listening on http://localhost:${port}`);
+})
+
+server.on("error", (err) => {
+    console.error(err)
+})
+
+server.on("close", (e) => {
+    console.info(e)
 })

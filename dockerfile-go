@@ -13,6 +13,6 @@ WORKDIR /app
 COPY --from=builder /app/out/app /app/app
 ENV PORT=90
 ENV IFACE=0.0.0.0
-ENV COLLECTOR=jager:4317
+ENV COLLECTOR=jaeger:4317
 EXPOSE 90
 CMD ["./app"]

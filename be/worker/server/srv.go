@@ -3,6 +3,7 @@ package server
 import (
 	"net"
 
+	"github.com/alontzafari/otel-trace-poc/be/worker/db"
 	"github.com/alontzafari/otel-trace-poc/proto/hello"
 	"github.com/alontzafari/otel-trace-poc/proto/test"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
@@ -10,17 +11,19 @@ import (
 )
 
 type Srv struct {
-	grpcSrv *grpc.Server
+	grpcSrv  *grpc.Server
+	dbClient *db.DB
 }
 
-func New() *Srv {
+func New(dbClient *db.DB) *Srv {
 	srv := grpc.NewServer(
 		grpc.StatsHandler(otelgrpc.NewServerHandler()),
 	)
-	hello.RegisterHelloServer(srv, &helloServer{})
+	hello.RegisterHelloServer(srv, &helloServer{dbClient: dbClient})
 	test.RegisterTestServer(srv, &TestServer{})
 	return &Srv{
-		grpcSrv: srv,
+		grpcSrv:  srv,
+		dbClient: dbClient,
 	}
 }
 

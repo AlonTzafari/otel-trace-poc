@@ -11,10 +11,18 @@ services:
       - 90
     profiles:
       - "app"
-  jager:
-    image: jaegertracing/all-in-one:latest
+  jaeger:
+    image: cr.jaegertracing.io/jaegertracing/jaeger:2.14.0
     ports:
       - 16686:16686
       - 4317:4317
+      - 4318:4318
     profiles: 
       - "infra"
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: password
