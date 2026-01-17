@@ -5,18 +5,20 @@ import (
 )
 
 type Conf struct {
-	PORT      int
-	IFACE     string
-	COLLECTOR string
-	MONGO_URL string
+	PORT         int
+	IFACE        string
+	COLLECTOR    string
+	MONGO_URL    string
+	KAFKA_BROKER string
 }
 
 func getDefaultConf() *Conf {
 	return &Conf{
-		PORT:      8090,
-		IFACE:     "127.0.0.1",
-		COLLECTOR: "localhost:4317",
-		MONGO_URL: "mongodb://localhost:27017",
+		PORT:         8090,
+		IFACE:        "127.0.0.1",
+		COLLECTOR:    "localhost:4317",
+		MONGO_URL:    "mongodb://localhost:27017",
+		KAFKA_BROKER: "kafka:9092",
 	}
 }
 

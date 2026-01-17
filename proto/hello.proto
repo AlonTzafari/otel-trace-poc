@@ -17,3 +17,8 @@ message HelloReq {
 message HelloRes {
     string msg = 1;
 }
+
+message DiceRollEvent {
+    string id = 1;
+    uint32 value = 2;
+}

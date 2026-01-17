@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"time"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -53,11 +53,15 @@ type DiceRoll struct {
 	Value int           `bson:"value"`
 }
 
-func (db *DB) SaveDiceRoll(ctx context.Context, diceRoll DiceRoll) error {
-	if diceRoll.ID == bson.NilObjectID {
-		diceRoll.ID = bson.NewObjectID()
+func (db *DB) SaveDiceRoll(ctx context.Context, diceRoll DiceRoll) (bson.ObjectID, error) {
+	res, err := db.coll.InsertOne(ctx, diceRoll)
+	if err != nil {
+		return bson.NilObjectID, err
 	}
-	fmt.Printf("db.coll %+v", db.coll)
-	_, err := db.coll.InsertOne(ctx, diceRoll)
-	return err
+
+	id, ok := res.InsertedID.(bson.ObjectID)
+	if !ok {
+		return bson.NilObjectID, errors.New("invalid id from dice roll insertion")
+	}
+	return id, nil
 }

@@ -6,6 +6,7 @@ import (
 	"math/rand/v2"
 
 	"github.com/alontzafari/otel-trace-poc/be/worker/db"
+	"github.com/alontzafari/otel-trace-poc/be/worker/queue"
 	"github.com/alontzafari/otel-trace-poc/be/worker/telemetry"
 	"github.com/alontzafari/otel-trace-poc/proto/hello"
 	"go.opentelemetry.io/otel/attribute"
@@ -14,6 +15,7 @@ import (
 type helloServer struct {
 	hello.UnimplementedHelloServer
 	dbClient *db.DB
+	producer *queue.Producer
 }
 
 // Hello implements [hello.HelloServer].
@@ -24,10 +26,15 @@ func (h *helloServer) Hello(ctx context.Context, req *hello.HelloReq) (*hello.He
 
 	num := diceRoll(ctx)
 
-	err := h.dbClient.SaveDiceRoll(ctx, db.DiceRoll{Value: num})
+	id, err := h.dbClient.SaveDiceRoll(ctx, db.DiceRoll{Value: num})
 	if err != nil {
 		return nil, err
 	}
+
+	h.producer.SendDiceRoll(ctx, &hello.DiceRollEvent{
+		Id:    id.Hex(),
+		Value: uint32(num),
+	})
 
 	return &hello.HelloRes{Msg: fmt.Sprintf("hello %s %d", req.Msg, num)}, nil
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/alontzafari/otel-trace-poc/be/worker/config"
 	"github.com/alontzafari/otel-trace-poc/be/worker/db"
+	"github.com/alontzafari/otel-trace-poc/be/worker/queue"
 	"github.com/alontzafari/otel-trace-poc/be/worker/server"
 	"github.com/alontzafari/otel-trace-poc/be/worker/telemetry"
 )
@@ -33,7 +34,9 @@ func main() {
 
 	fmt.Println("db connected")
 
-	srv := server.New(dbClient)
+	producer := queue.NewProducer(workerConf.KAFKA_BROKER)
+
+	srv := server.New(dbClient, producer)
 
 	addr := fmt.Sprintf("%s:%d", workerConf.IFACE, workerConf.PORT)
 

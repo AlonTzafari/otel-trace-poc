@@ -29,6 +29,11 @@ export interface HelloRes {
   msg: string;
 }
 
+export interface DiceRollEvent {
+  id: string;
+  value: number;
+}
+
 function createBaseHelloReq(): HelloReq {
   return { msg: "" };
 }
@@ -141,6 +146,82 @@ export const HelloRes: MessageFns<HelloRes> = {
   fromPartial<I extends Exact<DeepPartial<HelloRes>, I>>(object: I): HelloRes {
     const message = createBaseHelloRes();
     message.msg = object.msg ?? "";
+    return message;
+  },
+};
+
+function createBaseDiceRollEvent(): DiceRollEvent {
+  return { id: "", value: 0 };
+}
+
+export const DiceRollEvent: MessageFns<DiceRollEvent> = {
+  encode(message: DiceRollEvent, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.value !== 0) {
+      writer.uint32(16).uint32(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DiceRollEvent {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDiceRollEvent();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.value = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DiceRollEvent {
+    return {
+      id: isSet(object.id) ? globalThis.String(object.id) : "",
+      value: isSet(object.value) ? globalThis.Number(object.value) : 0,
+    };
+  },
+
+  toJSON(message: DiceRollEvent): unknown {
+    const obj: any = {};
+    if (message.id !== "") {
+      obj.id = message.id;
+    }
+    if (message.value !== 0) {
+      obj.value = Math.round(message.value);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DiceRollEvent>, I>>(base?: I): DiceRollEvent {
+    return DiceRollEvent.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<DiceRollEvent>, I>>(object: I): DiceRollEvent {
+    const message = createBaseDiceRollEvent();
+    message.id = object.id ?? "";
+    message.value = object.value ?? 0;
     return message;
   },
 };
